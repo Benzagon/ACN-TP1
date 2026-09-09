@@ -1,8 +1,6 @@
 import random
 from enum import Enum, auto
 
-TIEMPO_PARARME = 3
-
 class Estado(Enum):
     SENTADO = auto()
     SENTANDOME = auto()
@@ -13,10 +11,11 @@ class Estado(Enum):
     ESPERANDO_VOLVLER_AYO = auto()
 
 class Pasajero:
-    def __init__(self, asiento, P, T_SENTADO, T_CARRYON):
+    def __init__(self, asiento, avion, P, T_SENTADO, T_CARRYON):
         self.carryOn = random.uniform(0, 1) <= P
         self.asiento = asiento
         self.pos = [0,2]
+        avion[0][2] = 1
         self.soyVentana = asiento[1] == 4 or asiento[1] == 0
 
         self.estado = Estado.PARADO
@@ -26,6 +25,9 @@ class Pasajero:
         self.tiempoAEsperar = 0
 
         self.T_ACOMODARME = T_SENTADO + self.carryOn * T_CARRYON
+        self.T_PARARME = 3
+
+        self.ID_AYO = 2 if asiento[1] < 2 else 3
 
     # Estoy a un asiento
     def estoyAUno(self):
@@ -36,19 +38,18 @@ class Pasajero:
 
     def sentarme(self, avion):
         avion[self.asiento[0]][self.asiento[1]] = 1
-
+        self.estado = Estado.SENTADO
         if self.HICE_AYO:
             avion[self.asiento[0]][2] = 8
         else:
             avion[self.asiento[0]][2] = 0
 
-        self.pos = self.asiento
+        self.pos = self.asiento.copy()
 
         if not self.soyVentana:
             if (self.asiento[1] == 1 and avion[self.asiento[0]][0] != 1) or (self.asiento[1] == 3 and avion[self.asiento[0]][4] != 1):
                 self.estado = Estado.LISTENING_AYO
-        else:
-            self.estado = Estado.SENTADO
+           
         return
 
     def avanzar(self, avion):
@@ -72,10 +73,23 @@ class Pasajero:
         self.tiempoAEsperar -= 1
         if self.tiempoAEsperar > 0: return
 
-        pass #
+        match self.estado:
+            case Estado.PARADO:
+                self.analizarPARADO(avion)
+            case Estado.AVANZANDO:
+                self.analizarAVANZANDO(avion)
+            case Estado.SENTANDOME:
+                self.analizarSENTANDOME(avion)
+            case Estado.LISTENING_AYO:
+                self.analizarLISTENING_AYO(avion)
+            case Estado.DOING_AYO:
+                self.analizarDOING_AYO(avion)
+            case Estado.ESPERANDO_VOLVLER_AYO:
+                self.analizarESPERANDO_VOLVER_AYO(avion)
+        return
 
-    def analizarPARADO(self):
-        if self.tengoAlguienEnFrente(): return
+    def analizarPARADO(self, avion):
+        if self.tengoAlguienEnFrente(avion) and not self.llegueAFila(): return
         if not self.estoy_esperando:
             self.tiempoAEsperar = 3
             self.estoy_esperando = True
@@ -85,10 +99,10 @@ class Pasajero:
         return
 
     def analizarAVANZANDO(self, avion):
-        if self.soyVentana and self.estoyAUno() and self.asientoPasilloOcupado():
+        if self.soyVentana and self.estoyAUno() and self.asientoPasilloOcupado(avion) and not self.HICE_AYO:
             # Avisarle que se pare EYO ESTOOO TIENE QYE SER 3 A VECES
             #####
-            avion[self.asiento[0]][2] = 2
+            avion[self.asiento[0]][2] = self.ID_AYO
             self.estado = Estado.PARADO
             self.HICE_AYO = True
             return
@@ -109,10 +123,11 @@ class Pasajero:
         self.avanzar(avion)
         return
 
-    def analizarSENTARME(self, avion):
+    def analizarSENTANDOME(self, avion):
         if not self.estoy_esperando:
             self.tiempoAEsperar = self.T_ACOMODARME
             self.estoy_esperando = True
+            return
 
         self.estoy_esperando = False
         self.sentarme(avion)
@@ -120,11 +135,12 @@ class Pasajero:
 
     def analizarLISTENING_AYO(self, avion):
         # Esperando a que me avisen AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        if avion[self.pos[0]][2] != 2: return
+        if avion[self.pos[0]][2] != self.ID_AYO: return
 
         if not self.estoy_esperando:
             self.tiempoAEsperar = self.T_PARARME
             self.estoy_esperando = True
+            return
 
         self.estoy_esperando = False
         avion[self.pos[0]][self.pos[1]] = 0
@@ -134,7 +150,7 @@ class Pasajero:
         return
 
     def analizarDOING_AYO(self, avion):
-        if self.tengoAlguienEnFrente(): return
+        if self.tengoAlguienEnFrente(avion): return
         if not self.estoy_esperando:
             self.tiempoAEsperar = 3
             self.estoy_esperando = True
@@ -149,12 +165,13 @@ class Pasajero:
 
     def analizarESPERANDO_VOLVER_AYO(self, avion):
         # Esperando a que me avisen AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        if avion[self.pos[0]][2] != 8: return
-
+        if avion[self.pos[0]-1][2] != 8: return
         if not self.estoy_esperando:
             self.tiempoAEsperar = 6
             self.estoy_esperando = True
+            return
 
         self.estoy_esperando = False
-        self.sentarme()
+        avion[self.pos[0]][self.pos[1]] = 0
+        self.sentarme(avion)
         return
