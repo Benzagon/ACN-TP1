@@ -21,6 +21,10 @@ COLOR_CABEZA = (222, 184, 135)    # "cabeza" de la persona sentada
 COLOR_PERSONA_PASILLO = (70, 130, 190)   # cuerpo de quien camina por el pasillo
 COLOR_CABEZA_PASILLO = (222, 184, 135)   # cabeza de quien camina por el pasillo
 
+COLOR_PERSONA_CARRYON = (178, 34, 34)    # remera roja de quien camina con carry-on
+COLOR_CARRYON = (90, 60, 30)             # cuerpo de la maleta
+COLOR_CARRYON_MANIJA = (40, 40, 40)      # manija de la maleta
+
 
 def es_pasillo(col_idx):
     return col_idx == COL_PASILLO
@@ -61,6 +65,41 @@ def dibujar_persona_pasillo(pantalla, x, y):
     pygame.draw.circle(pantalla, COLOR_CABEZA_PASILLO, centro_cabeza, radio_cabeza)
 
 
+def dibujar_persona_pasillo_carryon(pantalla, x, y):
+    """Dibuja a alguien caminando por el pasillo con carry-on: mismo cuerpo
+    que dibujar_persona_pasillo pero con remera roja, más una mini valija
+    al lado. Solo se usa mientras la persona está en el pasillo (valor 4);
+    al sentarse pasa a ser un 1 normal y ya no se dibuja el carry-on."""
+    # Cuerpo corrido levemente para dejarle lugar a la valija al costado
+    centro_cuerpo = (x + CELDA * 0.42, y + CELDA / 2)
+    radio_cuerpo = CELDA * 0.28
+    pygame.draw.circle(pantalla, COLOR_PERSONA_CARRYON, centro_cuerpo, radio_cuerpo)
+
+    radio_cabeza = CELDA * 0.15
+    centro_cabeza = (x + CELDA * 0.42, y + CELDA * 0.35)
+    pygame.draw.circle(pantalla, COLOR_CABEZA_PASILLO, centro_cabeza, radio_cabeza)
+
+    # Mini carry-on: un rectángulo angosto con una manija arriba
+    carryon_w = CELDA * 0.22
+    carryon_h = CELDA * 0.34
+    carryon_x = x + CELDA * 0.68
+    carryon_y = y + CELDA * 0.5 - carryon_h / 2
+    pygame.draw.rect(
+        pantalla, COLOR_CARRYON,
+        (carryon_x, carryon_y, carryon_w, carryon_h),
+        border_radius=3
+    )
+    manija_w = carryon_w * 0.5
+    manija_h = CELDA * 0.08
+    manija_x = carryon_x + (carryon_w - manija_w) / 2
+    manija_y = carryon_y - manija_h + 2
+    pygame.draw.rect(
+        pantalla, COLOR_CARRYON_MANIJA,
+        (manija_x, manija_y, manija_w, manija_h),
+        border_radius=2
+    )
+
+
 def calcular_celda(filas, columnas):
     """Elige el tamaño de celda más grande posible que haga entrar toda
     la ventana en la pantalla del usuario, con un mínimo y un máximo."""
@@ -97,9 +136,11 @@ def dibujar(pantalla, avion):
             if es_pasillo(col_idx):
                 # piso del pasillo
                 pygame.draw.rect(pantalla, COLOR_PASILLO, (x, y, CELDA, CELDA))
-                # si hay alguien caminando ahí (valor == 1), lo dibujamos encima
+                # si hay alguien caminando ahí, lo dibujamos encima
                 if valor == 1:
                     dibujar_persona_pasillo(pantalla, x, y)
+                elif valor == 4:
+                    dibujar_persona_pasillo_carryon(pantalla, x, y)
                 continue
 
             if valor == -1:
@@ -108,7 +149,9 @@ def dibujar(pantalla, avion):
                 pygame.draw.rect(pantalla, COLOR_PASILLO, (x, y, CELDA, CELDA))
                 continue
 
-            ocupado = (valor == 1)
+            # En los asientos, un 4 se trata igual que un 1 (una vez sentado
+            # ya no lleva el carry-on visible)
+            ocupado = (valor == 1 or valor == 4)
             dibujar_asiento(pantalla, x, y, ocupado)
 
     pygame.display.flip()
