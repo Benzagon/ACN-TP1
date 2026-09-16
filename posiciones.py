@@ -3,7 +3,7 @@ import random
 def posiciones_random(FILAS, ASIENTOS_VALIDOS, N_PASAJEROS, desde=0):
     return random.sample([(f, a) for f in range(desde+1, FILAS+1) for a in ASIENTOS_VALIDOS],N_PASAJEROS)
 
-def posiciones_por_zona(FILAS, ASIENTOS_VALIDOS, N_PASAJEROS, K, reverse=True):
+def posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K, reverse=True):
     posiciones = []
     filas_por_grupo = FILAS // K
     pasajeros_por_grupo = filas_por_grupo * len(ASIENTOS_VALIDOS)
@@ -56,8 +56,8 @@ def posiciones_por_WILMA_random(FILAS, N_PASAJEROS):
     return temp1
 
 def posiciones_por_WILMA_back_to_front(FILAS, N_PASAJEROS):
-    temp1 = posiciones_por_zona(FILAS, [0, 4], N_PASAJEROS//2, FILAS)
-    temp2 = posiciones_por_zona(FILAS, [1, 3], N_PASAJEROS - N_PASAJEROS//2, FILAS)
+    temp1 = posiciones_por_zona(FILAS, N_PASAJEROS//2, [0, 4], FILAS)
+    temp2 = posiciones_por_zona(FILAS, N_PASAJEROS - N_PASAJEROS//2, [1, 3], FILAS)
     for pos in range(len(temp2)):
         temp1.append(temp2[pos])
     return temp1
