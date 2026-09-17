@@ -18,8 +18,8 @@ class Criterio(Enum):
     wilma_back_to_front = auto()
     steffen = auto()
 
-def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio, VELOCIDAD=0):
-    K = 5
+def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio, K_grupos=5, VELOCIDAD=0):
+    K = K_grupos
     posiciones = []
     if criterio == Criterio.random:
         posiciones = posiciones_random(FILAS, ASIENTOS_VALIDOS, N_PASAJEROS)
