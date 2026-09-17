@@ -12,11 +12,11 @@ import random
 class Criterio(Enum):
     random = auto()
     por_zona = auto()
+    back_to_front = auto()
     wilma_por_grupos = auto()
     wilma_random = auto()
     wilma_back_to_front = auto()
     steffen = auto()
-    steffen2 = auto()
 
 def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio):
     K = 5
@@ -25,6 +25,8 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
         posiciones = posiciones_random(FILAS, ASIENTOS_VALIDOS, N_PASAJEROS)
     elif criterio == Criterio.por_zona:
         posiciones = posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K)
+    elif criterio == Criterio.back_to_front:
+        posiciones = posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K=FILAS)
     elif criterio == Criterio.wilma_por_grupos:
         posiciones = posiciones_por_WILMA_por_grupos(FILAS, N_PASAJEROS, K)
     elif criterio == Criterio.wilma_random:
@@ -32,8 +34,6 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
     elif criterio == Criterio.wilma_back_to_front:
         posiciones = posiciones_por_WILMA_back_to_front(FILAS, N_PASAJEROS)
     elif criterio == Criterio.steffen:
-        posiciones = posiciones_steffen(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS)
-    elif criterio == Criterio.steffen2:
         posiciones = posiciones_steffen2(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS)
     else:
         raise ValueError(f"Criterio no soportado: {criterio}")
@@ -73,7 +73,7 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
 
         if VISUALIZAR:
             dibujar(pantalla, avion)
-            pygame.time.delay(0) 
+            pygame.time.delay(5) 
         tiempo += 1
     res = {"tiempo": tiempo}
     return res

@@ -54,11 +54,11 @@ def guardar_csv(resultados, path="tiempos.csv"):
 FILAS = 25
 N_PASAJEROS = 100
 VISUALIZAR = False
-P_CARRY_ON = 1
+P_CARRY_ON = 0.75
 T_SENTADO = 3
 T_CARRYON = 9
 
-ITERS = 200
+ITERS = 500
 
 ASIENTOS_VALIDOS = [0, 1, 3, 4]
 

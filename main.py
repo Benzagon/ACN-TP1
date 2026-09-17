@@ -1,6 +1,5 @@
 from simular import simular, Criterio
 import random
-import statistics
 
 FILAS = 25
 N_PASAJEROS = 100
@@ -9,11 +8,11 @@ P_CARRY_ON = 0.75
 T_SENTADO = 3
 T_CARRYON = 9
 
-ITERS = 2
+ITERS = 1
 
 ASIENTOS_VALIDOS = [0, 1, 3, 4]
 
-CRITERIO = Criterio.steffen
+CRITERIO = Criterio.back_to_front
 
 random.seed(100)  
 
