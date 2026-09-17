@@ -18,7 +18,7 @@ class Criterio(Enum):
     wilma_back_to_front = auto()
     steffen = auto()
 
-def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio):
+def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio, VELOCIDAD=0):
     K = 5
     posiciones = []
     if criterio == Criterio.random:
@@ -73,7 +73,7 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
 
         if VISUALIZAR:
             dibujar(pantalla, avion)
-            pygame.time.delay(5) 
+            pygame.time.delay(VELOCIDAD) 
         tiempo += 1
     res = {"tiempo": tiempo}
     return res
