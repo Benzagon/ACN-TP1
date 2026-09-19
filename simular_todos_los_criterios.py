@@ -2,6 +2,7 @@ from simular import simular, Criterio
 import random
 import statistics
 import csv
+import numpy as np
 
 resultados_por_criterio = {}
 
@@ -34,6 +35,7 @@ def imprimir_resumen(criterio, resumen, n):
     print(f"== {criterio.name} N={n} ==")
     print(f"  Promedio: {t['promedio']/60:.2f} min")
     print(f"  Desvío estándar: {t['desvio_std']/60:.2f} min")
+    print(f"  Error de estimación: {t['desvio_std']/(60 * np.sqrt(n)):.2f} min")
     print(f"  Mín: {t['min']/60:.2f} min | Máx: {t['max']/60:.2f} min | Mediana: {t['mediana']/60:.2f} min")
 
 def guardar_csv(resultados, path="tiempos.csv"):
@@ -56,9 +58,9 @@ N_PASAJEROS = 100
 VISUALIZAR = False
 P_CARRY_ON = 0.75
 T_SENTADO = 3
-T_CARRYON = 9
+T_CARRYON = 6
 
-ITERS = 500
+ITERS = 1000
 
 ASIENTOS_VALIDOS = [0, 1, 3, 4]
 

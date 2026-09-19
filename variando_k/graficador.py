@@ -21,9 +21,31 @@ sns.lineplot(
     label="Por zona"
 )
 
+# Marcar el mínimo en K=1
+k1 = df[df["K_grupos"] == 2].iloc[0]
+min_tiempo = k1["tiempo_promedio"]
+
+plt.scatter(
+    k1["K_grupos"],
+    min_tiempo,
+    color="tab:blue",
+    s=80,
+    zorder=5
+)
+
+plt.annotate(
+    f"(2, {min_tiempo:.2f})",
+    (k1["K_grupos"], min_tiempo),
+    xytext=(10, -15),
+    textcoords="offset points",
+    ha="left",
+    color="tab:blue",
+    fontweight="bold"
+)
+
 # Líneas horizontales
-random = 41.79
-back_to_front = 46.74
+random =  40.76
+back_to_front = 43.88
 
 plt.axhline(y=random, color="green", linestyle="--")
 plt.axhline(y=back_to_front, color="red", linestyle="--")
@@ -31,7 +53,7 @@ plt.axhline(y=back_to_front, color="red", linestyle="--")
 # Títulos sobre las líneas
 plt.text(
     df["K_grupos"].max(),
-    random + 0.4,
+    random + 0.2,
     "Promedio Random",
     color="green",
     ha="right",
@@ -41,7 +63,7 @@ plt.text(
 
 plt.text(
     df["K_grupos"].max(),
-    back_to_front + 0.4,
+    back_to_front + 0.2,
     "Promedio Back-to-front",
     color="red",
     ha="right",

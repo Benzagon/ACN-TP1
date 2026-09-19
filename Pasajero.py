@@ -72,8 +72,9 @@ class Pasajero:
 
     def decidirObjetivo(self, avion):
         # Esperar
-        self.tiempoAEsperar -= 1
-        if self.tiempoAEsperar > 0: return
+        if self.estoy_esperando:
+            self.tiempoAEsperar -= 1
+            if self.tiempoAEsperar > 0: return
 
         match self.estado:
             case Estado.PARADO:
