@@ -9,10 +9,10 @@ T_CARRYON = 6
 
 ASIENTOS_VALIDOS = [0, 1, 3, 4]
 
-ITERS = 1000
-CRITERIO = Criterio.random
+ITERS = 1
+CRITERIO = Criterio.wilma_random
 VELOCIDAD = 10
-VISUALIZAR = False
+VISUALIZAR = True
 
 random.seed(100)  
 
