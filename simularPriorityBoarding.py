@@ -9,6 +9,22 @@ import sys
 import numpy as np
 import random
 
+def aplicar_priority_boarding(posiciones, n_priority=10):
+    """Mueve n_priority pasajeros elegidos al azar al frente de la lista."""
+    posiciones = list(posiciones)
+    n = len(posiciones)
+    n_priority = min(n_priority, n)
+
+    indices_priority = random.sample(range(n), n_priority)
+    indices_priority_set = set(indices_priority)
+
+    prioritarios = [posiciones[i] for i in indices_priority]
+    resto = [posiciones[i] for i in range(n) if i not in indices_priority_set]
+
+    random.shuffle(prioritarios)
+
+    return prioritarios + resto
+
 class Criterio(Enum):
     random = auto()
     por_zona = auto()
@@ -18,7 +34,7 @@ class Criterio(Enum):
     wilma_back_to_front = auto()
     steffen = auto()
 
-def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio, K_grupos=2, VELOCIDAD=0, P_DE_VACIO=0):
+def simularConPriority10(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRYON, VISUALIZAR, criterio, K_grupos=2, VELOCIDAD=0, P_DE_VACIO=0):
     K = K_grupos
     posiciones = []
     if criterio == Criterio.random:
@@ -38,6 +54,8 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
     else:
         raise ValueError(f"Criterio no soportado: {criterio}")
 
+    posiciones = aplicar_priority_boarding(posiciones)
+
     pasajeros = []
     siguiente = 0
 
@@ -52,6 +70,7 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
     avion[0][1] = -1
     avion[0][3] = -1
     avion[0][4] = -1
+
 
     PASAJEROS_QUE_ATENDIERON = len(posiciones)
     listening_ayo = 0
@@ -81,3 +100,4 @@ def simular(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO, T_CARRY
         tiempo += 1
     res = {"tiempo": tiempo}
     return res
+

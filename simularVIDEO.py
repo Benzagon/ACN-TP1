@@ -64,7 +64,7 @@ POS_Y = 40
 
 
 def simular_sin_reset(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTADO,
-                       T_CARRYON, VISUALIZAR, criterio, pantalla, K_grupos=2, VELOCIDAD=0):
+                       T_CARRYON, VISUALIZAR, criterio, pantalla, K_grupos=2, VELOCIDAD=0, P_DE_VACIO=0):
     """
     Copia de simular() (simular.py) que recibe la `pantalla` ya creada
     en vez de llamar a iniciar_ventana() de nuevo, para que la ventana
@@ -82,19 +82,19 @@ def simular_sin_reset(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_CARRY_ON, T_SENTAD
     K = K_grupos
     posiciones = []
     if criterio == Criterio.random:
-        posiciones = posiciones_random(FILAS, ASIENTOS_VALIDOS, N_PASAJEROS)
+        posiciones = posiciones_random(FILAS, ASIENTOS_VALIDOS, N_PASAJEROS, P_DE_VACIO=P_DE_VACIO)
     elif criterio == Criterio.por_zona:
-        posiciones = posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K)
+        posiciones = posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K, P_DE_VACIO=P_DE_VACIO)
     elif criterio == Criterio.back_to_front:
-        posiciones = posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K=FILAS)
+        posiciones = posiciones_por_zona(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, K=FILAS, P_DE_VACIO=P_DE_VACIO)
     elif criterio == Criterio.wilma_por_grupos:
-        posiciones = posiciones_por_WILMA_por_grupos(FILAS, N_PASAJEROS, K)
+        posiciones = posiciones_por_WILMA_por_grupos(FILAS, N_PASAJEROS, K, P_DE_VACIO=P_DE_VACIO)
     elif criterio == Criterio.wilma_random:
-        posiciones = posiciones_por_WILMA_random(FILAS, N_PASAJEROS)
+        posiciones = posiciones_por_WILMA_random(FILAS, N_PASAJEROS, P_DE_VACIO=P_DE_VACIO)
     elif criterio == Criterio.wilma_back_to_front:
-        posiciones = posiciones_por_WILMA_back_to_front(FILAS, N_PASAJEROS)
+        posiciones = posiciones_por_WILMA_back_to_front(FILAS, N_PASAJEROS, P_DE_VACIO=P_DE_VACIO)
     elif criterio == Criterio.steffen:
-        posiciones = posiciones_steffen2(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS)
+        posiciones = posiciones_steffen2(FILAS, N_PASAJEROS, ASIENTOS_VALIDOS, P_DE_VACIO=P_DE_VACIO)
     else:
         raise ValueError(f"Criterio no soportado: {criterio}")
 
