@@ -1,0 +1,2 @@
+# INFO SOBRE TP
+En los distintos archivos incluímos tanto el código para simular experimentos como el código para generar pasajeros individuales. En particular, si se quiere correr un solo experimento basta con ejecutar únicamente el archivo *main.py*. Toda la lógica para un pasajero está en el archivo *Pasajero.py*.
