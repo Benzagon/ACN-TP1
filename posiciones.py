@@ -186,45 +186,6 @@ def posiciones_por_WILMA_back_to_front(
 
     return temp1
 
-
-def posiciones_steffen(
-    FILAS,
-    N_PASAJEROS,
-    ASIENTOS_VALIDOS,
-    P_DE_VACIO
-):
-    orden_filas = (
-        list(
-            range(
-                FILAS if FILAS % 2 == 0 else FILAS - 1,
-                0,
-                -2
-            )
-        )
-        +
-        list(
-            range(
-                FILAS if FILAS % 2 == 1 else FILAS - 1,
-                0,
-                -2
-            )
-        )
-    )
-
-    posiciones = [
-        (f, a)
-        for f in orden_filas
-        for a in ASIENTOS_VALIDOS
-    ]
-
-    posiciones = posiciones[:N_PASAJEROS]
-
-    return aplicar_p_de_vacio(
-        posiciones,
-        P_DE_VACIO
-    )
-
-
 def posiciones_steffen2(
     FILAS,
     N_PASAJEROS,
